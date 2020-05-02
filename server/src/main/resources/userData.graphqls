@@ -1,0 +1,17 @@
+type Query{
+    users: [User]
+    findUser(Username: String!, Password: String!): User
+}
+
+type User{
+    id: Long
+    Username: String!
+    Password: String!
+    Email: String!
+    Phone: String!
+}
+
+type Mutation{
+	newUser(Username: String!, Password: String!, Email: String, Phone: String): User
+	deleteUser(username: String!) : Long!
+}

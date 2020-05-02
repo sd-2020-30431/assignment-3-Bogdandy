@@ -1,0 +1,25 @@
+type GroceryItem{
+    id: Long
+    ListNo: Int
+    idUserList: Long
+    ItemName: String
+    Quantity: Int
+    CaloricValue: Int
+    PurchaseDate: String
+    ExpirationDate: String
+    ConsumptionDate: String
+}
+
+extend type Query{
+    items: [GroceryItem]
+    userItems(idUserList: Long!, ListNo: Int!): [GroceryItem]
+    userAllItems(idUserList: Long!): [GroceryItem]
+    searchItem(idUserList: Long!, ListNo: Int!, ItemName: String!): Boolean!
+}
+
+extend type Mutation {
+	newGroceryItem(ListNo: Int!, idUserL: Long!, ItemName: String!, Quantity: Int!, CaloricValue: Int!, PurchaseDate: String!, ExpirationDate: String!, ConsumptionDate: String!): GroceryItem!
+	deleteGroceryItem(id: Long!) : Boolean!
+	modifyGroceryItem(id: Long!, ItemName: String!, Quantity: Int!, CaloricValue: Int!, PurchaseDate: String!, ExpirationDate: String!, ConsumptionDate: String!): GroceryItem!
+	clearList(idUserList: Long!, ListNo: Int!): Boolean!
+}
