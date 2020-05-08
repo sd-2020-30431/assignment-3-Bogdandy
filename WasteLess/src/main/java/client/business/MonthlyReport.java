@@ -89,7 +89,7 @@ public class MonthlyReport {
                     return x3.compareTo(x4);
                 });
                 
-                boolean notification = false;
+                ReportResultType reportResultType;
                 for(int i = 1; i <= 5; i ++){
                     myWriter.write("\n\nGroceryList " + i + ":");
                     boolean check = true;
@@ -115,12 +115,12 @@ public class MonthlyReport {
                                     
                                     YearMonth yearMonthObject = YearMonth.of(yearDate, monthDate);
                                     int daysInMonth = yearMonthObject.lengthOfMonth();
-                                    if(1000*daysInMonth> calories){
-                                        myWriter.write("Calorie Intake too low! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }else if(calories > 2800* daysInMonth){
-                                        myWriter.write("Calorie Intake too high! Please try to revise your diet.\n");
-                                        notification = true;
+                                    if(1000 * daysInMonth> calories || calories > 2800* daysInMonth){
+                                        reportResultType = new ReportDecorator(new BadConsumption());
+                                        reportResultType.writeToReport(myWriter);
+                                    }else{
+                                        reportResultType = new ReportDecorator(new GoodConsumption());
+                                        reportResultType.writeToReport(myWriter);
                                     }
                                     
                                     calories = reportItem.getCalories();
@@ -132,16 +132,16 @@ public class MonthlyReport {
                                 }
                             }
                             if(!it.hasNext()){
-                                    myWriter.write("\nTotal Calories: " + calories + "\n");
-                                    YearMonth yearMonthObject = YearMonth.of(yearDate, monthDate);
-                                    int daysInMonth = yearMonthObject.lengthOfMonth();
-                                    if(1000 * daysInMonth> calories){
-                                        myWriter.write("Calorie Intake too low! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }else if(calories > 2800* daysInMonth){
-                                        myWriter.write("Calorie Intake too high! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }
+                                myWriter.write("\nTotal Calories: " + calories + "\n");
+                                YearMonth yearMonthObject = YearMonth.of(yearDate, monthDate);
+                                int daysInMonth = yearMonthObject.lengthOfMonth();
+                                if(1000 * daysInMonth> calories || calories > 2800* daysInMonth){
+                                    reportResultType = new ReportDecorator(new BadConsumption());
+                                    reportResultType.writeToReport(myWriter);
+                                }else{
+                                    reportResultType = new ReportDecorator(new GoodConsumption());
+                                    reportResultType.writeToReport(myWriter);
+                                }
                             }
                         }
                     } 

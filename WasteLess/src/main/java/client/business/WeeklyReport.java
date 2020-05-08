@@ -5,7 +5,7 @@ import java.text.*;
 import java.time.ZoneId;
 import java.util.*;
 
-public class WeeklyReport {
+public class WeeklyReport{
     private List<ItemInformation> groceryList;
     private List<Date> checkDates;
     private final List<ReportDataStructure> reportItems = new ArrayList<>();
@@ -90,7 +90,7 @@ public class WeeklyReport {
                     return x3.compareTo(x4);
                 });
                 
-                boolean notification = false;
+                ReportResultType reportResultType;
                 for(int i = 1; i <= 5; i ++){
                     myWriter.write("\n\nGroceryList " + i + ":");
                     boolean check = true;
@@ -101,27 +101,28 @@ public class WeeklyReport {
                         ReportDataStructure reportItem = it.next();
                         if(reportItem.getTableIndex() == i){
                             if(check){
-                                yearDate = reportItem.getYear();
-                                weekDate = reportItem.getCriteria();
-                                check = false;
-                                myWriter.write("\nWeek " + weekDate + " Year " + yearDate);
+                                    yearDate = reportItem.getYear();
+                                    weekDate = reportItem.getCriteria();
+                                    check = false;
+                                    myWriter.write("\nWeek " + weekDate + " Year " + yearDate);
+                                } 
                             }
-                            
+
                             if(yearDate == reportItem.getYear()){
                                 if(weekDate == reportItem.getCriteria()){
                                     calories += reportItem.getCalories();
                                     myWriter.write("\n" + reportItem.getItemName() + " " + reportItem.getQuantity() + " " + reportItem.getCalories());
                                 }else{
                                     myWriter.write("\nTotal Calories: " + calories + "\n");
-                                    
-                                    if(1000*7> calories){
-                                        myWriter.write("Calorie Intake too low! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }else if(calories > 2800* 7){
-                                        myWriter.write("Calorie Intake too high! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }    
-                                    
+
+                                    if(1000*7> calories || calories > 2800* 7){
+                                        reportResultType = new ReportDecorator(new BadConsumption());
+                                        reportResultType.writeToReport(myWriter);
+                                    }else{
+                                        reportResultType = new ReportDecorator(new GoodConsumption());
+                                        reportResultType.writeToReport(myWriter);
+                                    }
+
                                     calories = reportItem.getCalories();
                                     yearDate = reportItem.getYear();
                                     weekDate = reportItem.getCriteria();
@@ -131,20 +132,19 @@ public class WeeklyReport {
                                 }
                                 if(!it.hasNext()){
                                     myWriter.write("\nTotal Calories: " + calories + "\n");
-                                    if(1000*7> calories){
-                                        myWriter.write("Calorie Intake too low! Please try to revise your diet.\n");
-                                        notification = true;
-                                    }else if(calories > 2800* 7){
-                                        myWriter.write("Calorie Intake too high! Please try to revise your diet.\n");
-                                        notification = true;
+                                    if(1000*7> calories || calories > 2800* 7){
+                                        reportResultType = new ReportDecorator(new BadConsumption());
+                                        reportResultType.writeToReport(myWriter);
+                                    }else{
+                                        reportResultType = new ReportDecorator(new GoodConsumption());
+                                        reportResultType.writeToReport(myWriter);
                                     }
                                 }
                             }
                         }
                     } 
-                }
-                myWriter.close();
-            }
+                    myWriter.close();
+                } 
         }catch(IOException e){
             return null;
         }
