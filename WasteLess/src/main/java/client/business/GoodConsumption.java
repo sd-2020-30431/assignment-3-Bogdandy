@@ -15,4 +15,5 @@ public class GoodConsumption implements ReportResultType{
             Logger.getLogger(BadConsumption.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }
